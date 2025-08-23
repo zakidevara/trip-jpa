@@ -1,4 +1,4 @@
-package com.example.flight;
+package com.example.trip.flight;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

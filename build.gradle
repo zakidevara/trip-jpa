@@ -7,11 +7,11 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-description = 'Flight Microservice'
+description = 'Trip Microservice'
 
 
 springBoot {
-	mainClass = 'com.example.flight.FlightJpaApplication'
+	mainClass = 'com.example.trip.FlightJpaApplication'
 }
 
 repositories {

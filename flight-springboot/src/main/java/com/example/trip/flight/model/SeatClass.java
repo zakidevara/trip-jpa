@@ -1,4 +1,4 @@
-package com.example.flight.model;
+package com.example.trip.flight.model;
 
 public enum SeatClass {
   ECONOMY,

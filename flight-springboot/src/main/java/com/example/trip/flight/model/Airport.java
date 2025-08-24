@@ -1,6 +1,7 @@
 package com.example.trip.flight.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
@@ -16,6 +17,6 @@ public class Airport {
   private String city; // City where the airport is located
   @Column
   private String country; // Country where the airport is located
-  @Column
+  @Embedded
   private Coordinate coordinate;
 }

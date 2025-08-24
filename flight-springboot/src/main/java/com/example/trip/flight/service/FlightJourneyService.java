@@ -9,18 +9,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class FlightJourneyService  {
   private final FlightJourneyRepository flightJourneyRepository;
-  private final FlightRouteRepository flightRouteRepository;
+  private final FlightRouteService flightRouteService;
   private final AirportRepository airportRepository;
 
-  public FlightJourneyService(FlightJourneyRepository flightJourneyRepository, FlightRouteRepository flightRouteRepository, AirportRepository airportRepository) {
+  public FlightJourneyService(FlightJourneyRepository flightJourneyRepository, FlightRouteService flightRouteService, AirportRepository airportRepository) {
     this.flightJourneyRepository = flightJourneyRepository;
-    this.flightRouteRepository = flightRouteRepository;
+    this.flightRouteService = flightRouteService;
     this.airportRepository = airportRepository;
   }
 
-  public Iterable<FlightJourney> generateCheapestJourney(String origin, String destination) {
+  public Iterable<FlightJourney> generateCheapestJourneyOneWay(String origin, String destination) {
+//    flightRouteService.findByOriginAndDestination(origin, destination);
     return null;
   }
+
 
   public FlightJourney findCheapestJourney(String origin, String destination) {
     return null;

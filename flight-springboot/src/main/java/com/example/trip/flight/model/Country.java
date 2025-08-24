@@ -1,6 +1,7 @@
 package com.example.trip.flight.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -16,7 +17,7 @@ public class Country {
   private String code; // ISO country code
   @Column
   private String name; // Country name
-  @Column
+  @Embedded
   private Coordinate coordinate;
   @OneToMany
   @JoinColumn(name = "country_code")

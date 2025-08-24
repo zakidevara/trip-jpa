@@ -1,6 +1,7 @@
 package com.example.trip.flight.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -18,9 +19,8 @@ public class City {
   private String name; // City name
   @Column
   private String country; // Country where the city is located
-  @Column
+  @Embedded
   private Coordinate coordinate;
   @ManyToMany
-  @JoinColumn(name = "nearby_airports_id")
   private List<Airport> nearbyAirports; // List of nearby airports
 }

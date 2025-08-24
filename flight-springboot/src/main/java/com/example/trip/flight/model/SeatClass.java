@@ -6,7 +6,7 @@ public enum SeatClass {
   FIRST("First Class");
 
   private String label;
-  private SeatClass(String label) {
+  SeatClass(String label) {
     this.label = label;
   }
 }

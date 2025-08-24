@@ -16,7 +16,7 @@ import java.util.List;
 public class FlightJourney {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private String id; // Unique identifier for the flight journey
+  private long id; // Unique identifier for the flight journey
 
   @ManyToMany
   @JoinColumn(name = "departure_routes_id")

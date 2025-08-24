@@ -10,6 +10,7 @@ import com.example.trip.flight.repository.FlightSegmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -86,30 +87,38 @@ public class FlightRouteService {
         .seatClass(seatClass)
         .providerFare(farePerPax)
         .segments(
-            generateSegments(origin, destination, airlineId, flightNumber, aircraftType, departureTime, arrivalTime, seatClass)
+            generateSegments(origin, destination, airlineId, flightNumber, aircraftType, departureTime, arrivalTime, seatClass, Math.random() < 0.5 ? 1 : 2)
         )
         .build();
     return flightRouteRepository.save(route);
   }
 
-  private List<FlightSegment> generateSegments(String origin, String destination, String airlineId, String flightNumber, String aircraftType, long departureTime, long arrivalTime, SeatClass seatClass) {
-    FlightSegment segment = FlightSegment.builder()
-        .originAirport(origin)
-        .destinationAirport(destination)
-        .airlineId(airlineId)
-        .flightNumber(flightNumber)
-        .aircraftType(aircraftType)
-        .departureTime(departureTime)
-        .arrivalTime(arrivalTime)
-        .seatClass(seatClass)
-        .id(String.format("%s.%s.%s-%s.%s.%s.%s.%s.%s", origin, destination, airlineId, flightNumber, seatClass,
-            new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(departureTime)),
-            new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date(departureTime)),
-            new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(arrivalTime)),
-            new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date(arrivalTime))
-        ))
-        .build();
-    flightSegmentRepository.save(segment);
-    return List.of(segment);
+  private List<FlightSegment> generateSegments(String origin, String destination, String airlineId, String flightNumber, String aircraftType, long departureTime, long arrivalTime, SeatClass seatClass, int numberOfSegments) {
+    List<FlightSegment> segments = new ArrayList<>();
+    for (int i = 0; i < numberOfSegments; i++) {
+      String segmentOrigin = (i == 0) ? origin : "INT" + i; // Intermediate airport code
+      String segmentDestination = (i == numberOfSegments - 1) ? destination : "INT" + (i + 1);
+      long segmentDepartureTime = departureTime + (i * 3600000L); // Each segment departs an hour after the previous
+      long segmentArrivalTime = (i == numberOfSegments - 1) ? arrivalTime : segmentDepartureTime + 3600000L; // Each segment lasts one hour
+      FlightSegment segment = FlightSegment.builder()
+          .originAirport(segmentOrigin)
+          .destinationAirport(segmentDestination)
+          .airlineId(airlineId)
+          .flightNumber(flightNumber + "-" + (i + 1))
+          .aircraftType(aircraftType)
+          .departureTime(segmentDepartureTime)
+          .arrivalTime(segmentArrivalTime)
+          .seatClass(seatClass)
+          .id(String.format("%s.%s.%s-%s.%s.%s.%s.%s.%s", segmentOrigin, segmentDestination, airlineId, flightNumber + "-" + (i + 1), seatClass,
+              new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(segmentDepartureTime)),
+              new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date(segmentDepartureTime)),
+              new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(segmentArrivalTime)),
+              new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date(segmentArrivalTime))
+          ))
+          .build();
+      flightSegmentRepository.save(segment);
+      segments.add(segment);
+    }
+    return segments;
   }
 }

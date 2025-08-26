@@ -4,11 +4,18 @@ import com.example.trip.flight.logger.LogAction;
 import com.example.trip.flight.model.Airport;
 import com.example.trip.flight.model.Coordinate;
 import com.example.trip.flight.repository.AirportRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.StreamSupport;
 
 @Service
 public class AirportService {
   private final AirportRepository airportRepository;
+  @Autowired
+  @Lazy
+  private AirportService self;
 
   public AirportService(AirportRepository airportRepository) {
     this.airportRepository = airportRepository;
@@ -16,8 +23,8 @@ public class AirportService {
 
   @LogAction(
       value = "upsert-airport",
-      inputCountExpression = "1",
-      outputCountExpression = "1"
+      inputCountExpression = "#airport != null ? 1 : 0",
+      outputCountExpression = "#result != null ? 1 : 0"
   )
   public Airport upsert(Airport airport) {
     return airportRepository.save(airport);
@@ -29,7 +36,7 @@ public class AirportService {
       outputCountExpression = "#result != null ? T(java.util.stream.StreamSupport).stream(#result.spliterator(), false).count() : 0"
   )
   public Iterable<Airport> findAll() {
-    return airportRepository.findAll();
+    return this.self.filterByCountry(airportRepository.findAll(), "USA");
   }
 
   public Airport findById(String id) {
@@ -50,6 +57,17 @@ public class AirportService {
 
   public void deleteAll() {
     airportRepository.deleteAll();
+  }
+
+  @LogAction(
+      value = "filter-airports-by-country",
+      inputCountExpression = "#airports != null ? T(java.util.stream.StreamSupport).stream(#airports.spliterator(), false).count() : 0",
+      outputCountExpression = "#result != null ? T(java.util.stream.StreamSupport).stream(#result.spliterator(), false).count() : 0"
+  )
+  public Iterable<Airport> filterByCountry(Iterable<Airport> airports, String country) {
+    return StreamSupport.stream(airports.spliterator(), false)
+        .filter(airport -> airport.getCountry().equals(country))
+        .toList();
   }
 
   public void populateAirports() {

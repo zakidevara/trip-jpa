@@ -23,7 +23,7 @@ public class FlightRouteService {
     this.flightSegmentRepository = flightSegmentRepository;
   }
 
-  public void generateAllRoutes() {
+  public void populateAllRoutes() {
     // Implementation to generate all possible flight routes
     flightRouteRepository.saveAll(List.of(
         generateRoute("JFK", "LAX", "AA", "100", "Boeing 737", 1701424800000L, 1701435600000L, SeatClass.ECONOMY,

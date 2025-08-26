@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class FlightJpaApplication implements CommandLineRunner {
   @Autowired
   private FlightJourneyService flightJourneyService;
@@ -27,7 +29,8 @@ public class FlightJpaApplication implements CommandLineRunner {
   }
 
   private void generateData() {
-    flightRouteService.generateAllRoutes();
+    airportService.populateAirports();
+    flightRouteService.populateAllRoutes();
     flightJourneyService.generateCheapestJourneyOneWay("JFK", "LAX");
   }
 }

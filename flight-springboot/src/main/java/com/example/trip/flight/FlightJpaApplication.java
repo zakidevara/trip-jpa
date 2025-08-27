@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-@SpringBootApplication
-@EnableAspectJAutoProxy(proxyTargetClass = true)
+@SpringBootApplication(exclude = AopAutoConfiguration.class)
+//@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class FlightJpaApplication implements CommandLineRunner {
   @Autowired
   private FlightJourneyService flightJourneyService;

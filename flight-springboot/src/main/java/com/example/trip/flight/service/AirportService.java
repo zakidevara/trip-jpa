@@ -1,6 +1,7 @@
 package com.example.trip.flight.service;
 
 import com.example.trip.flight.logger.LogAction;
+import com.example.trip.flight.logger.LogActionV2;
 import com.example.trip.flight.model.Airport;
 import com.example.trip.flight.model.Coordinate;
 import com.example.trip.flight.repository.AirportRepository;
@@ -13,15 +14,12 @@ import java.util.stream.StreamSupport;
 @Service
 public class AirportService {
   private final AirportRepository airportRepository;
-  @Autowired
-  @Lazy
-  private AirportService self;
 
   public AirportService(AirportRepository airportRepository) {
     this.airportRepository = airportRepository;
   }
 
-  @LogAction(
+  @LogActionV2(
       value = "upsert-airport",
       inputCountExpression = "#airport != null ? 1 : 0",
       outputCountExpression = "#result != null ? 1 : 0"
@@ -30,13 +28,13 @@ public class AirportService {
     return airportRepository.save(airport);
   }
 
-  @LogAction(
+  @LogActionV2(
       value = "find-all-airports",
       inputCountExpression = "0",
       outputCountExpression = "#result != null ? T(java.util.stream.StreamSupport).stream(#result.spliterator(), false).count() : 0"
   )
   public Iterable<Airport> findAll() {
-    return this.self.filterByCountry(airportRepository.findAll(), "USA");
+    return filterByCountry(airportRepository.findAll(), "USA");
   }
 
   public Airport findById(String id) {
@@ -59,12 +57,12 @@ public class AirportService {
     airportRepository.deleteAll();
   }
 
-  @LogAction(
+  @LogActionV2(
       value = "filter-airports-by-country",
       inputCountExpression = "#airports != null ? T(java.util.stream.StreamSupport).stream(#airports.spliterator(), false).count() : 0",
       outputCountExpression = "#result != null ? T(java.util.stream.StreamSupport).stream(#result.spliterator(), false).count() : 0"
   )
-  public Iterable<Airport> filterByCountry(Iterable<Airport> airports, String country) {
+  private Iterable<Airport> filterByCountry(Iterable<Airport> airports, String country) {
     return StreamSupport.stream(airports.spliterator(), false)
         .filter(airport -> airport.getCountry().equals(country))
         .toList();
@@ -81,7 +79,7 @@ public class AirportService {
       upsert(new Airport("SFO", "San Francisco International Airport", "San Francisco", "USA", new Coordinate(0, 0)));
       upsert(new Airport("SEA", "Seattle-Tacoma International Airport", "Seattle", "USA", new Coordinate(0, 0)));
       upsert(new Airport("MIA", "Miami International Airport", "Miami", "USA", new Coordinate(0, 0)));
-      upsert(new Airport("BOS", "Logan International Airport", "Boston", "USA", new Coordinate(0, 0)));
+      upsert(new Airport("BOS", "Logan International Airport", "Boston", "US", new Coordinate(0, 0)));
     }
   }
 }

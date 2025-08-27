@@ -1,0 +1,10 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.example.trip.flight.logger.LogActionV2Aspect" />
+    </aspects>
+    <weaver>
+        <include within="com.example.trip..*" />
+        <include within="com.example.trip.flight.service..*"/>
+        <dump type="all" />
+    </weaver>
+</aspectj>

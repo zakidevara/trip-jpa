@@ -3,26 +3,31 @@ plugins {
 	id 'org.springframework.boot' version '3.5.5'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.diffplug.spotless' version '6.21.0'
+	id 'io.freefair.lombok' version '8.4'
+	id 'io.freefair.aspectj.post-compile-weaving' version '8.4'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 description = 'Trip Microservice'
 
-
 springBoot {
-	mainClass = 'com.example.trip.FlightJpaApplication'
+	mainClass = 'com.example.trip.flight.FlightJpaApplication'
 }
 
 repositories {
 	mavenCentral()
 }
 
+ext.aspectjVersion = '1.9.21'
+
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'com.diffplug.spotless'
+	apply plugin: 'io.freefair.lombok'
+	apply plugin: 'io.freefair.aspectj.post-compile-weaving'
 
 	tasks.withType(CopySpec).configureEach {
 		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -31,12 +36,14 @@ subprojects {
 	tasks.withType(JavaCompile).configureEach {
 		options.encoding = 'UTF-8'
 		options.compilerArgs << '-parameters'
+		options.generatedSourceOutputDirectory.set(
+				project.layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main")
+		)
 	}
 
 	tasks.withType(Checkstyle).configureEach {
 		enabled = false
 	}
-
 
 	repositories {
 		mavenCentral()
@@ -47,7 +54,13 @@ subprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		implementation 'org.springframework.boot:spring-boot-starter-actuator'
-		implementation 'org.springframework.boot:spring-boot-starter-aop'
+		// Uncomment if you want to enable spring AOP logging
+//		implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+		// aspectj dependencies
+		implementation 'org.aspectj:aspectjrt:1.9.21'
+		implementation 'org.aspectj:aspectjweaver:1.9.21'
+
 		compileOnly 'org.projectlombok:lombok'
 		runtimeOnly 'com.h2database:h2'
 		annotationProcessor 'org.projectlombok:lombok'
@@ -56,8 +69,6 @@ subprojects {
 	}
 
 }
-
-
 
 java {
 	toolchain {

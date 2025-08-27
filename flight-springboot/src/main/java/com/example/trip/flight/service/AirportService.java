@@ -63,6 +63,11 @@ public class AirportService {
       outputCountExpression = "#result != null ? T(java.util.stream.StreamSupport).stream(#result.spliterator(), false).count() : 0"
   )
   private Iterable<Airport> filterByCountry(Iterable<Airport> airports, String country) {
+    try {
+      Thread.sleep(100); // Simulate a delay of 100 milliseconds
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     return StreamSupport.stream(airports.spliterator(), false)
         .filter(airport -> airport.getCountry().equals(country))
         .toList();
